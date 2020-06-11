@@ -1,0 +1,72 @@
+---
+  - name: upgrade all packages
+    apt:
+      name: "*"
+      state: latest
+    become: true
+    become_user: root
+
+  - name: install common packages
+    apt:
+      name:
+        - git
+        - python3.7
+        - python3-distutils
+        - unzip
+      state: present
+    become: true
+    become_user: root
+
+  - name: download get-pip.py
+    get_url:
+      url: https://bootstrap.pypa.io/get-pip.py
+      dest: /home/vagrant/get-pip.py
+      mode: '0664'
+
+  - name: install pip3.7
+    shell: /usr/bin/python3.7 get-pip.py
+    args:
+      chdir: /home/vagrant/
+
+  - name: install aws cli
+    pip:
+      name: awscli
+      executable: pip3
+
+  - name: upzip terraform package to /usr/local/bin
+    unarchive:
+      src: https://releases.hashicorp.com/terraform/0.12.24/terraform_0.12.24_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: '0755'
+
+  - name: upzip eks-ctl package to /usr/local/bin
+    unarchive:
+      src: https://github.com/weaveworks/eksctl/releases/download/0.19.0-rc.0/eksctl_Linux_amd64.tar.gz
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: '0755'
+
+  - name: kubectl installation
+    get_url:
+      url: https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl
+      dest: /usr/local/bin/
+      mode: '0755'
+
+  - name: sops cli installation
+    get_url:
+      url: https://github.com/mozilla/sops/releases/download/v3.5.0/sops-v3.5.0.linux
+      dest: /usr/local/bin/sops
+      mode: '0755'
+
+  - name: downloading helm cli tar
+    get_url:
+      url: https://get.helm.sh/helm-v3.2.0-linux-amd64.tar.gz
+      dest: /home/vagrant/helm.tar.gz
+
+  - name: extracting helm cli to /usr/local/bin
+    shell: tar -zxvf helm.tar.gz -C /usr/local/bin linux-amd64/helm --strip-components 1
+    args:
+      chdir: /home/vagrant/
+    become: true
+    become_user: root
