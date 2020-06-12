@@ -4,15 +4,15 @@
 # you're doing.
 Vagrant.configure("2") do |config|
 
-  config.vm.define "cpt_dev_env" do |cpt_dev_env|
-    cpt_dev_env.vm.box = "ubuntu/bionic64"
+  config.vm.define "dev_env" do |dev_env|
+    dev_env.vm.box = "ubuntu/bionic64"
 
-    cpt_dev_env.vm.network  "private_network", ip: "192.168.50.9"
-    cpt_dev_env.vm.network  "public_network"
+    dev_env.vm.network  "private_network", ip: "192.168.50.9"
+    dev_env.vm.network  "public_network"
 
     # Config to mount/share a folder from the host
     # cpt_dev_env.vm.synced_folder "/foo/bar", "/data/"
-    cpt_dev_env.vm.provider :virtualbox do |vb|
+    dev_env.vm.provider :virtualbox do |vb|
       vb.cpus = 4
       vb.memory = 4096
       end
